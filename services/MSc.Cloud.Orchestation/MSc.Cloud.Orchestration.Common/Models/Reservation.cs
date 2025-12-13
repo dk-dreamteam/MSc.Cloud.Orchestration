@@ -1,4 +1,4 @@
-﻿namespace MSc.Cloud.Orchestration.EventsService.Models;
+﻿namespace MSc.Cloud.Orchestration.Common.Models;
 
 public class Reservation
 {

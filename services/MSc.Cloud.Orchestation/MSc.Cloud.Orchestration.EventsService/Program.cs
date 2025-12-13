@@ -1,12 +1,15 @@
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using MSc.Cloud.Orchestration.Common;
 using Npgsql;
 using System.Data;
 using System.Text.Json;
 
 // get configuration from environment variables.
-var dbConnStr = Environment.GetEnvironmentVariable("POSTGRES_CONN_STR");
-ArgumentNullException.ThrowIfNull(dbConnStr, "POSTGRES_CONN_STR environment variable is not set.");
+var dbConnStr = Environment.GetEnvironmentVariable(NamesValues.EnvironmentVariables.PostgresConnectionString);
+ArgumentNullException.ThrowIfNull(dbConnStr, $"{NamesValues.EnvironmentVariables.PostgresConnectionString} environment variable is not set.");
+
+Console.WriteLine($"Using PostgreSQL connection string: {dbConnStr}");
 
 var builder = WebApplication.CreateBuilder(args);
 
