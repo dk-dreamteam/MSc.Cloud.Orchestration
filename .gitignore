@@ -1,1 +1,67 @@
+# Environment files
 db.env
+
+# Visual Studio IDE files and directories
+.vs/
+.vscode/
+*.user
+*.suo
+*.sln.docstates
+*.userprefs
+
+# Build results
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+*.aps
+*.ncb
+*.opensdf
+*.sdf
+*.cachefile
+*.pidb
+*.log
+*.scc
+
+# Visual Studio cache/options
+.vs/
+.vscode/
+ipch/
+*.VC.db
+*.VC.VC.opendb
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+.vs/
+
+# Rider
+.idea/
+*.sln.iml
+
+# Node modules (if applicable)
+node_modules/
+
+# Environment and OS files
+.env
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Test results
+TestResults/
+coverage/
+
+# Temporary files
+*.tmp
+*.temp
