@@ -1,30 +1,22 @@
-# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
-# This stage is used when running from VS in fast mode (Default for Debug configuration)
-FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine AS base
-USER $APP_UID
-WORKDIR /app
-EXPOSE 8080
-
-
-# This stage is used to build the service project
-FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine AS build
-ARG BUILD_CONFIGURATION=Release
+# we use alpine again for a smaller image size to begin with for the build part.
+FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine as build
 WORKDIR /src
+
+# copy the project's files and its depedencies and run dotnet restore to restore the dependencies.
 COPY ["MSc.Cloud.Orchestration.EventsService/MSc.Cloud.Orchestration.EventsService.csproj", "MSc.Cloud.Orchestration.EventsService/"]
 COPY ["MSc.Cloud.Orchestration.Common/MSc.Cloud.Orchestration.Common.csproj", "MSc.Cloud.Orchestration.Common/"]
-RUN dotnet restore "./MSc.Cloud.Orchestration.EventsService/MSc.Cloud.Orchestration.EventsService.csproj"
+RUN dotnet restore "MSc.Cloud.Orchestration.EventsService/MSc.Cloud.Orchestration.EventsService.csproj"
+
+# copy to the working dir.
 COPY . .
+
+# build and publish app locally.
 WORKDIR "/src/MSc.Cloud.Orchestration.EventsService"
-RUN dotnet build "./MSc.Cloud.Orchestration.EventsService.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet publish -c Release -o /app/publish /p:UseAppHost=false
 
-# This stage is used to publish the service project to be copied to the final stage
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./MSc.Cloud.Orchestration.EventsService.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-
-# This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
-FROM base AS final
+# we use the base image for runtime only. We use the alpine variant for a smaller image size only for the runtime.
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine
 WORKDIR /app
-COPY --from=publish /app/publish .
+EXPOSE 8080
+COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "MSc.Cloud.Orchestration.EventsService.dll"]
