@@ -3,6 +3,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using MSc.Cloud.Orchestration.Common;
 using Npgsql;
 using System.Data;
+using System.Reflection;
 using System.Text.Json;
 
 // get configuration from environment variables.
@@ -16,7 +17,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+});
 
 // register PostgreSQL connection
 builder.Services.AddScoped<IDbConnection>(sp =>
