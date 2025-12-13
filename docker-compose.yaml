@@ -4,9 +4,27 @@ services:
     restart: unless-stopped
     env_file:
       - db.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U sa -d musichall" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
   adminer:
     image: adminer
     ports:
       - "8080:8080"
     depends_on:
       - db
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://localhost:8080/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  # Named volume for persistent database data
+  postgres_data:
+    driver: local
