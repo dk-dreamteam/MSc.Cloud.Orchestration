@@ -1,16 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Dapper;
+using Microsoft.AspNetCore.Mvc;
+using MSc.Cloud.Orchestration.EventsService.Models;
+using System.Data;
 
 namespace MSc.Cloud.Orchestation.EventsService.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class EventsController : ControllerBase
+public class EventsController(IDbConnection dbConnection) : ControllerBase
 {
-    // GET: api/<ValuesController>
     [HttpGet]
-    public IEnumerable<string> Get()
+    public async Task<IActionResult> Get()
     {
-        return new string[] { "value1", "value2" };
+        var reservations = dbConnection.Query<Reservation>("SELECT * FROM \"Reservations\".\"Reservation\"");
+        return Ok(reservations);
     }
 
     // GET api/<ValuesController>/5

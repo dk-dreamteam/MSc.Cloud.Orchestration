@@ -4,16 +4,18 @@ using Npgsql;
 using System.Data;
 using System.Text.Json;
 
+// get configuration from environment variables.
+var dbConnStr = Environment.GetEnvironmentVariable("POSTGRES_CONN_STR");
+ArgumentNullException.ThrowIfNull(dbConnStr, "POSTGRES_CONN_STR environment variable is not set.");
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+builder.Services.AddSwaggerGen();
 
 // register PostgreSQL connection
-var dbConnStr = Environment.GetEnvironmentVariable("POSTGRES_CONN_STR");
-ArgumentNullException.ThrowIfNull(dbConnStr, "POSTGRES_CONN_STR environment variable is not set.");
-
 builder.Services.AddScoped<IDbConnection>(sp =>
     new NpgsqlConnection(dbConnStr));
 
@@ -33,20 +35,19 @@ builder.Services.AddHealthChecks()
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
+// use api documentation.
+app.MapOpenApi();
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.MapHealthChecks("/health", new HealthCheckOptions
 {
     ResponseWriter = async (context, report) =>
     {
+        context.Response.ContentType = "application/json";
+
         var response = new
         {
             status = report.Status.ToString(),
