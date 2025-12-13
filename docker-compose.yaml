@@ -2,10 +2,8 @@ services:
   db:
     image: postgres:16-alpine
     restart: unless-stopped
-    environment:
-      POSTGRES_USER: sa
-      POSTGRES_PASSWORD: 77java&&
-      POSTGRES_DB: musichall
+    env_file:
+      - db.env
   adminer:
     image: adminer
     ports:
