@@ -1,5 +1,6 @@
 # Environment files
-db.env
+.env.db
+.env.*
 
 # Visual Studio IDE files and directories
 .vs/
