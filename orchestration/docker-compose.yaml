@@ -5,7 +5,7 @@ services:
     env_file:
       - .env.db
     volumes:
-      - Z:\me25052_me25067_postgres_data:/var/lib/postgresql/data
+      - me25052_me25067_postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U sa -d musichall" ]
       interval: 10s
@@ -26,3 +26,11 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+volumes:
+  me25052_me25067_postgres_data:
+    driver: local
+    driver_opts:
+      device: Z:\me25052_me25067_postgres_data
+      type: none
+      o: bind
