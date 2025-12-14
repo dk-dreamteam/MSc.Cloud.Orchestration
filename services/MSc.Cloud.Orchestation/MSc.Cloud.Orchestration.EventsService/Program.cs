@@ -31,10 +31,23 @@ builder.Services.AddScoped<IDbConnection>(sp =>
 
 // add health checks
 builder.Services.AddHealthChecks()
-    .AddCheck(
+    .AddAsyncCheck(
         name: "SupaBase Function",
-        () =>
+        async () =>
         {
+            using var client = new HttpClient();
+            var req = new HttpRequestMessage(
+                HttpMethod.Head, "https://mlrejxahluybrnrizzmh.supabase.co/functions/v1/send-sms-notificaiton");
+
+            //@dimgrev: you can get this from env var as well as the function url.
+            req.Headers.Authorization = new("Bearer", "bearer token. use the env file.");
+            var res = await client.SendAsync(req);
+
+            if (!res.IsSuccessStatusCode)
+            {
+                return new HealthCheckResult(HealthStatus.Unhealthy, description: "SupaBase function is not healthy.");
+            }
+
             return new HealthCheckResult(HealthStatus.Healthy);
         })
     .AddNpgSql(
