@@ -9,6 +9,13 @@ interface reqPayload {
 console.info('server started');
 
 Deno.serve(async (req: Request) => {
+
+  // we added this to support healthchecks towards this function.
+  if (req.method === "HEAD") {
+    console.info('Healthcheck requested. Healthy.');
+    return new Response(null, { status: 200 });
+  }
+
   // get request.
   const reqPayload = await req.json();
 
