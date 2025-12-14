@@ -5,7 +5,8 @@ services:
     env_file:
       - .env.db
     volumes:
-      - me25052_me25067_postgres_data:/var/lib/postgresql/data
+      - ./scripts:/docker-entrypoint-initdb.d
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U sa -d musichall" ]
       interval: 10s
@@ -17,20 +18,23 @@ services:
       - 5432:5432
   adminer:
     image: adminer
+    restart: unless-stopped
     ports:
-      - "8080:8080"
+      - 8080:8080
     depends_on:
       - db
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      test: ["CMD-SHELL", "curl -f http://localhost:8080"]
       interval: 10s
       timeout: 5s
       retries: 5
+  events-service:
+    image: msccloudorchestrationeventsservice:latest
+    restart: unless-stopped
+    env_file:
+      - .env.events-service
+    ports:
+     - 3000:8080
 
 volumes:
-  me25052_me25067_postgres_data:
-    driver: local
-    driver_opts:
-      device: Z:\me25052_me25067_postgres_data
-      type: none
-      o: bind
+  postgres_data:
