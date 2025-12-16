@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="MSc.Cloud.Orchestration.Common/MSc.Cloud.Orchestration.Common.csproj" Id="f505d61f-0217-4cbf-9063-bf61a1f8504c" />
   <Project Path="MSc.Cloud.Orchestration.EventsService/MSc.Cloud.Orchestration.EventsService.csproj" />
+  <Project Path="MSc.Cloud.Orchestration.ReservationsService/MSc.Cloud.Orchestration.ReservationsService.csproj" Id="383cd8f4-2e4c-46e0-af75-025d72cdec09" />
 </Solution>
