@@ -1,43 +1,57 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MSc.Cloud.Orchestration.Common.Contracts;
+using MSc.Cloud.Orchestration.Common.Repositories.Interfaces;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+namespace MSc.Cloud.Orchestration.ReservationsService.Controllers;
 
-namespace MSc.Cloud.Orchestration.ReservationsService.Controllers
+[ApiController]
+[Route("api/[controller]")]
+public sealed class ReservationsController(IReservationRepository repository) : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ReservationsController : ControllerBase
+    // POST: api/reservations
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateReservationRequest request)
     {
-        // GET: api/<REservationsController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        if (request.NumTickets <= 0)
+            return BadRequest("NumTickets must be greater than zero.");
 
-        // GET api/<REservationsController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
+        var id = await repository.CreateAsync(request);
 
-        // POST api/<REservationsController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
+        return CreatedAtAction(
+            nameof(GetById),
+            new { id },
+            new { id });
+    }
 
-        // PUT api/<REservationsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+    // GET: api/reservations/{id}
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var reservation = await repository.GetByIdAsync(id);
 
-        // DELETE api/<REservationsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        if (reservation is null)
+            return NotFound();
+
+        return Ok(reservation);
+    }
+
+    // GET: api/reservations
+    [HttpGet]
+    public async Task<IActionResult> List()
+    {
+        var reservations = await repository.ListAsync();
+        return Ok(reservations);
+    }
+
+    // DELETE: api/reservations/{id}
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var deleted = await repository.DeleteAsync(id);
+
+        if (!deleted)
+            return NotFound();
+
+        return NoContent();
     }
 }

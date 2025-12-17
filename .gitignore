@@ -66,3 +66,4 @@ coverage/
 # Temporary files
 *.tmp
 *.temp
+/services/MSc.Cloud.Orchestation/MSc.Cloud.Orchestration.ReservationsService/Properties/launchSettings.json
