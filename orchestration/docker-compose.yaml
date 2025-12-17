@@ -48,6 +48,13 @@ services:
       - .env.events-service
     ports:
      - 3000:8080
+  reservations-service:
+    image: msccloudorchestrationreservationsservice:latest
+    restart: unless-stopped
+    env_file:
+      - .env.reservations-service
+    ports:
+     - 4000:8080
 
 volumes:
   postgres_data:
