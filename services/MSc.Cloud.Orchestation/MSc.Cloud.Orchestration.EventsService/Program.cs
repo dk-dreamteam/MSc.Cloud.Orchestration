@@ -15,6 +15,9 @@ Console.WriteLine($"Using PostgreSQL connection string: {dbConnStr}");
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddCommon(builder.Configuration);
+
+// Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen(c =>
@@ -26,8 +29,8 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // register PostgreSQL connection
-builder.Services.AddScoped<IDbConnection>(sp =>
-    new NpgsqlConnection(dbConnStr));
+//builder.Services.AddScoped<IDbConnection>(sp =>
+//    new NpgsqlConnection(dbConnStr));
 
 // add health checks
 builder.Services.AddHealthChecks()

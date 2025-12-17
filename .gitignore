@@ -67,3 +67,4 @@ coverage/
 *.tmp
 *.temp
 /services/MSc.Cloud.Orchestation/MSc.Cloud.Orchestration.ReservationsService/Properties/launchSettings.json
+/services/MSc.Cloud.Orchestation/MSc.Cloud.Orchestration.EventsService/Properties/launchSettings.json

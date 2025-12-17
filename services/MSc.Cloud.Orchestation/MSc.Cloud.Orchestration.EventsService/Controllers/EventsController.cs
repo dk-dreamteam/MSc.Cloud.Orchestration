@@ -1,48 +1,60 @@
-﻿using Dapper;
-using Microsoft.AspNetCore.Mvc;
-using MSc.Cloud.Orchestration.Common;
-using MSc.Cloud.Orchestration.Common.Models;
-using System.Data;
+﻿using Microsoft.AspNetCore.Mvc;
+using MSc.Cloud.Orchestration.Common.Contracts;
+using MSc.Cloud.Orchestration.Common.Repositories.Interfaces;
 
 namespace MSc.Cloud.Orchestration.EventsService.Controllers;
 
-[Route("api/[controller]")]
 [ApiController]
-public class EventsController(IDbConnection dbConnection) : ControllerBase
+[Route("api/[controller]")]
+public sealed class EventsController(IEventRepository repository) : ControllerBase
 {
-    /// <summary>
-    /// Get all events.
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet]
-    public async Task<IActionResult> Get()
-    {
-        var reservations = dbConnection.Query<Event>(NamesValues.Queries.Events.GetEventsNotDeleted);
-        return Ok(reservations);
-    }
-
-    /// <summary>
-    /// Get an event by id.
-    /// </summary>
-    [HttpGet("{id}")]
-    public string Get(int id)
-    {
-        return "value";
-    }
-
-    /// <summary>
-    /// Create new event.
-    /// </summary>
+    // POST: api/events
     [HttpPost]
-    public void Post([FromBody] string value)
+    public async Task<IActionResult> Create([FromBody] CreateEventRequest request)
     {
+        if (string.IsNullOrWhiteSpace(request.Name))
+            return BadRequest("Name is required.");
+
+        if (request.StartsAt <= DateTime.UtcNow)
+            return BadRequest("StartsAt must be in the future.");
+
+        var id = await repository.CreateAsync(request);
+
+        return CreatedAtAction(
+            nameof(GetById),
+            new { id },
+            new { id });
     }
 
-    /// <summary>
-    /// Mark an event as deleted.
-    /// </summary>
-    [HttpDelete("{id}")]
-    public void Delete(int id)
+    // GET: api/events/{id}
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetById(int id)
     {
+        var ev = await repository.GetByIdAsync(id);
+
+        if (ev is null)
+            return NotFound();
+
+        return Ok(ev);
+    }
+
+    // GET: api/events
+    [HttpGet]
+    public async Task<IActionResult> List()
+    {
+        var events = await repository.ListAsync();
+        return Ok(events);
+    }
+
+    // DELETE: api/events/{id}
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var deleted = await repository.DeleteAsync(id);
+
+        if (!deleted)
+            return NotFound();
+
+        return NoContent();
     }
 }
