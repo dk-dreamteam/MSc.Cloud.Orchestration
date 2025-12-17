@@ -1,6 +1,18 @@
 services:
-  db:
+  appsmith:
+    image: appsmith/appsmith-ce
+    container_name: appsmith
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - appsmith-stacks
+    restart: unless-stopped
+    networks: [notanothernet]
+    
+  postgres:
     image: postgres:16-alpine
+    container_name: postgres
     restart: unless-stopped
     env_file:
       - .env.db
@@ -16,13 +28,14 @@ services:
     # only for development.
     ports: 
       - 5432:5432
+
   adminer:
     image: adminer
     restart: unless-stopped
     ports:
       - 8080:8080
     depends_on:
-      - db
+      - postgres
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8080"]
       interval: 10s
@@ -36,5 +49,17 @@ services:
     ports:
      - 3000:8080
 
+  events-service:
+    image: msccloudorchestrationeventsservice:latest
+    restart: unless-stopped
+    env_file:
+      - .env.events-service
+    ports:
+     - 3000:8080
+
 volumes:
   postgres_data:
+  appsmith-stacks:
+networks:
+  notanothernet:
+    driver: bridge
