@@ -8,7 +8,9 @@ namespace MSc.Cloud.Orchestration.EventsService.Controllers;
 [Route("api/[controller]")]
 public sealed class EventsController(IEventRepository repository) : ControllerBase
 {
-    // POST: api/events
+    /// <summary>
+    /// Create new event.
+    /// </summary>
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateEventRequest request)
     {
@@ -26,7 +28,9 @@ public sealed class EventsController(IEventRepository repository) : ControllerBa
             new { id });
     }
 
-    // GET: api/events/{id}
+    /// <summary>
+    /// Get an event by id.
+    /// </summary>
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -38,7 +42,10 @@ public sealed class EventsController(IEventRepository repository) : ControllerBa
         return Ok(ev);
     }
 
-    // GET: api/events
+    /// <summary>
+    /// Get all events.
+    /// </summary>
+    /// <returns></returns>
     [HttpGet]
     public async Task<IActionResult> List()
     {
@@ -46,7 +53,9 @@ public sealed class EventsController(IEventRepository repository) : ControllerBa
         return Ok(events);
     }
 
-    // DELETE: api/events/{id}
+    /// <summary>
+    /// Mark an event as deleted.
+    /// </summary>
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {

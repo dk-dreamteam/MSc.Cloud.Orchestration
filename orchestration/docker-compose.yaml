@@ -49,14 +49,6 @@ services:
     ports:
      - 3000:8080
 
-  events-service:
-    image: msccloudorchestrationeventsservice:latest
-    restart: unless-stopped
-    env_file:
-      - .env.events-service
-    ports:
-     - 3000:8080
-
 volumes:
   postgres_data:
   appsmith-stacks:
