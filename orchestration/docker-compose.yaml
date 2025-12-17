@@ -6,7 +6,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - appsmith-stacks
+      - appsmith_stacks:/appsmith-stacks
     restart: unless-stopped
     networks: [notanothernet]
     
@@ -51,7 +51,8 @@ services:
 
 volumes:
   postgres_data:
-  appsmith-stacks:
+  appsmith_stacks:
+  
 networks:
   notanothernet:
     driver: bridge
