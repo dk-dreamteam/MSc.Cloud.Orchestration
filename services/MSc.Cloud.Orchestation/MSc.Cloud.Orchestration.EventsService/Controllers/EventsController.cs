@@ -14,9 +14,6 @@ public sealed class EventsController(IEventRepository repository) : ControllerBa
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateEventRequest request)
     {
-        if (string.IsNullOrWhiteSpace(request.Name))
-            return BadRequest("Name is required.");
-
         if (request.StartsAt <= DateTime.UtcNow)
             return BadRequest("StartsAt must be in the future.");
 

@@ -1,4 +1,6 @@
-﻿namespace MSc.Cloud.Orchestration.Common.Contracts;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MSc.Cloud.Orchestration.Common.Contracts;
 
 public record EventDto(
     int Id,
@@ -21,14 +23,30 @@ public record ReservationDto(
 );
 
 public record CreateEventRequest(
+    [Required]
     string Name,
+
+    [Required]
     string Description,
+
+    [Required]
     DateTime StartsAt,
+
+    [Required]
     string ImgUrl
 );
 
 public record CreateReservationRequest(
+    [Required]
     int EventId,
+
+    [Required]
     string FullName,
-    int NumTickets
+
+    [Required]
+    [Range(1, int.MaxValue, ErrorMessage = "Number of tickets must be greater than zero.")]
+    int NumTickets,
+
+    [Required]
+    string EmailAddress
 );

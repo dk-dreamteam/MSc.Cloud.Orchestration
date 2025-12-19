@@ -12,9 +12,6 @@ public sealed class ReservationsController(IReservationRepository repository) : 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateReservationRequest request)
     {
-        if (request.NumTickets <= 0)
-            return BadRequest("NumTickets must be greater than zero.");
-
         var id = await repository.CreateAsync(request);
 
         return CreatedAtAction(
