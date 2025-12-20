@@ -33,6 +33,7 @@ public record CreateEventRequest(
     DateTime StartsAt,
 
     [Required]
+    [Url]
     string ImgUrl
 );
 
