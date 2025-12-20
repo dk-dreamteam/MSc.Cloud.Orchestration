@@ -20,7 +20,8 @@ public sealed class ReservationRepository : IReservationRepository
             SELECT "Reservations".create_reservation(
                 @EventId,
                 @FullName,
-                @NumTickets
+                @NumTickets,
+                @EmailAddress
             );
             """;
 
