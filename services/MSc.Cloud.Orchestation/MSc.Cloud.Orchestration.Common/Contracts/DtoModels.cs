@@ -48,5 +48,6 @@ public record CreateReservationRequest(
     int NumTickets,
 
     [Required]
+    [EmailAddress]
     string EmailAddress
 );
