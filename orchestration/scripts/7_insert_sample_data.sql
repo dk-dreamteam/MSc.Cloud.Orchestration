@@ -27,5 +27,6 @@ SELECT "Reservations".create_reservation(
     LIMIT 1
   ),
   'Kostantinos Dimitriou',
-  3
+  3,
+  'dim.grev@outlook.com'
 );

@@ -1,7 +1,8 @@
 CREATE OR REPLACE FUNCTION "Reservations".create_reservation(
   p_event_id    INTEGER,
   p_full_name   VARCHAR(1024),
-  p_num_tickets INTEGER
+  p_num_tickets INTEGER,
+  p_email_address VARCHAR(1024)
 )
 RETURNS INTEGER
 LANGUAGE plpgsql
@@ -12,12 +13,14 @@ BEGIN
   INSERT INTO "Reservations"."Reservation" (
     "EventId",
     "FullName",
-    "NumTickets"
+    "NumTickets",
+    "EmailAddress"
   )
   VALUES (
     p_event_id,
     p_full_name,
-    p_num_tickets
+    p_num_tickets,
+    p_email_address
   )
   RETURNING "Id" INTO v_id;
 
@@ -33,6 +36,7 @@ RETURNS TABLE (
   "EventId" INTEGER,
   "FullName" VARCHAR,
   "NumTickets" INTEGER,
+  "EmailAddress" VARCHAR,
   "CreatedOn" TIMESTAMPTZ,
   "IsDeleted" BOOLEAN
 )
@@ -52,6 +56,7 @@ RETURNS TABLE (
   "ReservationId" INTEGER,
   "FullName" VARCHAR,
   "NumTickets" INTEGER,
+  "EmailAddress" VARCHAR,
   "CreatedOn" TIMESTAMPTZ,
   "EventId" INTEGER,
   "EventName" VARCHAR,
@@ -65,6 +70,7 @@ BEGIN
     r."Id",
     r."FullName",
     r."NumTickets",
+    r."EmailAddress",
     r."CreatedOn",
     e."Id",
     e."Name",

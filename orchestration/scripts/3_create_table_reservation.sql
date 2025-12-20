@@ -9,6 +9,7 @@ CREATE TABLE "Reservations"."Reservation" (
     "EventId" integer NOT NULL,
     "FullName" character varying(1024) NOT NULL,
     "NumTickets" integer NOT NULL,
+    "EmailAddress" character varying(1024) NOT NULL,
     "CreatedOn" timestamptz DEFAULT now() NOT NULL,
     "IsDeleted" boolean DEFAULT false NOT NULL,
     CONSTRAINT "Reservation_pkey" PRIMARY KEY ("Id"),
