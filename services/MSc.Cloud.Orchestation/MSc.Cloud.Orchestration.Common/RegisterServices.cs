@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using MSc.Cloud.Orchestration.Common.Repositories;
 using MSc.Cloud.Orchestration.Common.Repositories.Interfaces;
+using MSc.Cloud.Orchestration.Common.Services;
 using Npgsql;
 using System.Data;
 
@@ -71,6 +72,26 @@ public static class RegisterServices
 
                     return new HealthCheckResult(HealthStatus.Healthy);
                 });
+
+        return services;
+    }
+
+    public static IServiceCollection AddSendEmailService(this IServiceCollection services, IConfiguration configuration)
+    {
+        // get configuration from environment variables.
+        var supabaseSendEmailFuncUrl = Environment.GetEnvironmentVariable(NamesValues.EnvironmentVariables.SupabaseSendEmailFunctionUrl);
+        ArgumentNullException.ThrowIfNull(supabaseSendEmailFuncUrl, string.Format(EnvVariableIsNotSetMessage, NamesValues.EnvironmentVariables.SupabaseSendEmailFunctionUrl));
+
+        var supabaseSendEmailFuncToken = Environment.GetEnvironmentVariable(NamesValues.EnvironmentVariables.SupabaseSendEmailFunctionToken);
+        ArgumentNullException.ThrowIfNull(supabaseSendEmailFuncToken, string.Format(EnvVariableIsNotSetMessage, NamesValues.EnvironmentVariables.SupabaseSendEmailFunctionToken));
+
+        services
+            .AddHttpClient<ISendEmailService, SendEmailService>((httpClient) =>
+            {
+                httpClient.DefaultRequestHeaders.Authorization = new("Bearer", supabaseSendEmailFuncToken);
+
+                return new SendEmailService(httpClient, supabaseSendEmailFuncUrl);
+            });
 
         return services;
     }

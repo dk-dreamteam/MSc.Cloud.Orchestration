@@ -5,6 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // add commmon services.
 builder.Services.AddCommon(builder.Configuration);
+builder.Services.AddSendEmailService(builder.Configuration);
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen(c =>

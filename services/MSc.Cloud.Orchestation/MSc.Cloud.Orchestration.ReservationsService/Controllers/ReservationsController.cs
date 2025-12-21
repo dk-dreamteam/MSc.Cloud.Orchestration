@@ -1,21 +1,35 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MSc.Cloud.Orchestration.Common.Models;
 using MSc.Cloud.Orchestration.Common.Repositories.Interfaces;
+using MSc.Cloud.Orchestration.Common.Services;
 
 namespace MSc.Cloud.Orchestration.ReservationsService.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public sealed class ReservationsController(IReservationRepository repository) : ControllerBase
+public sealed class ReservationsController(
+    IEventRepository eventsRepository,
+    IReservationRepository reservationsRepository,
+    ISendEmailService sendEmailService) : ControllerBase
 {
     /// <summary>
     /// Create new Reservation on given Event.
     /// </summary>
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateReservationRequest request)
+    public async Task<IActionResult> Create([FromBody] CreateReservationRequest request, CancellationToken cancellationToken)
     {
-        var id = await repository.CreateAsync(request);
+        // check if event exists.
+        var ev = await eventsRepository.GetByIdAsync(request.EventId);
+        if (ev is null)
+            return NotFound($"Event with id {request.EventId} not found.");
 
+        // create reservation and get new reservation id.
+        var id = await reservationsRepository.CreateAsync(request);
+
+        // after successful reservation, send confirmation email and don't await for result.
+        _ = sendEmailService.SendReservationConfirmationEmailAsync(request.EmailAddress, ev.Name, ev.StartsAt, cancellationToken);
+
+        // return 201 Created with new reservation id.
         return CreatedAtAction(
             nameof(GetById),
             new { id },
@@ -28,7 +42,7 @@ public sealed class ReservationsController(IReservationRepository repository) : 
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var reservation = await repository.GetByIdAsync(id);
+        var reservation = await reservationsRepository.GetByIdAsync(id);
 
         if (reservation is null)
             return NotFound();
@@ -42,7 +56,7 @@ public sealed class ReservationsController(IReservationRepository repository) : 
     [HttpGet]
     public async Task<IActionResult> List()
     {
-        var reservations = await repository.ListAsync();
+        var reservations = await reservationsRepository.ListAsync();
         return Ok(reservations);
     }
 
@@ -52,7 +66,7 @@ public sealed class ReservationsController(IReservationRepository repository) : 
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var deleted = await repository.DeleteAsync(id);
+        var deleted = await reservationsRepository.DeleteAsync(id);
 
         if (!deleted)
             return NotFound();
