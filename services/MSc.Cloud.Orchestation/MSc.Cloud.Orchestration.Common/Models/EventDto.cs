@@ -1,4 +1,4 @@
-﻿namespace MSc.Cloud.Orchestration.Common.Contracts;
+﻿namespace MSc.Cloud.Orchestration.Common.Models;
 
 public record EventDto(
     int Id,

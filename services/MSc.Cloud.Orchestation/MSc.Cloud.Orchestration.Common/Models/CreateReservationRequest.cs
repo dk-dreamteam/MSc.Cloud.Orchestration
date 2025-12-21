@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MSc.Cloud.Orchestration.Common.Contracts;
+namespace MSc.Cloud.Orchestration.Common.Models;
 
 public record CreateReservationRequest(
     [Required]

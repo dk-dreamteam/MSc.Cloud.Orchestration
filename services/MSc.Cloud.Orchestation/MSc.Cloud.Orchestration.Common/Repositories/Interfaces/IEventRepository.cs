@@ -1,4 +1,4 @@
-﻿using MSc.Cloud.Orchestration.Common.Contracts;
+﻿using MSc.Cloud.Orchestration.Common.Models;
 
 namespace MSc.Cloud.Orchestration.Common.Repositories.Interfaces;
 

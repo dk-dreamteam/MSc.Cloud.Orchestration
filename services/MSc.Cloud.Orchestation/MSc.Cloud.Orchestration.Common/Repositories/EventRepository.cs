@@ -1,5 +1,5 @@
 ﻿using Dapper;
-using MSc.Cloud.Orchestration.Common.Contracts;
+using MSc.Cloud.Orchestration.Common.Models;
 using MSc.Cloud.Orchestration.Common.Repositories.Interfaces;
 using System.Data;
 using static MSc.Cloud.Orchestration.Common.NamesValues.Queries.Events;
