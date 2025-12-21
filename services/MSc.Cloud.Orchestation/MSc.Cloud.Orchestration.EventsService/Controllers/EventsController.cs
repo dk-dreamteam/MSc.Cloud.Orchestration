@@ -42,7 +42,6 @@ public sealed class EventsController(IEventRepository repository) : ControllerBa
     /// <summary>
     /// Get all events.
     /// </summary>
-    /// <returns></returns>
     [HttpGet]
     public async Task<IActionResult> List()
     {

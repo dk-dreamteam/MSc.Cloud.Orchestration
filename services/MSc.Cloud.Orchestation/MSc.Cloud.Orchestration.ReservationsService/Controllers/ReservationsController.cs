@@ -8,7 +8,9 @@ namespace MSc.Cloud.Orchestration.ReservationsService.Controllers;
 [Route("api/[controller]")]
 public sealed class ReservationsController(IReservationRepository repository) : ControllerBase
 {
-    // POST: api/reservations
+    /// <summary>
+    /// Create new Reservation on given Event.
+    /// </summary>
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateReservationRequest request)
     {
@@ -20,7 +22,9 @@ public sealed class ReservationsController(IReservationRepository repository) : 
             new { id });
     }
 
-    // GET: api/reservations/{id}
+    /// <summary>
+    /// Get a Reservation by Id.
+    /// </summary>
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -32,7 +36,9 @@ public sealed class ReservationsController(IReservationRepository repository) : 
         return Ok(reservation);
     }
 
-    // GET: api/reservations
+    /// <summary>
+    /// Get Reservations.
+    /// </summary>
     [HttpGet]
     public async Task<IActionResult> List()
     {
@@ -40,7 +46,9 @@ public sealed class ReservationsController(IReservationRepository repository) : 
         return Ok(reservations);
     }
 
-    // DELETE: api/reservations/{id}
+    /// <summary>
+    /// Delete a Reservation by Id.
+    /// </summary>
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
