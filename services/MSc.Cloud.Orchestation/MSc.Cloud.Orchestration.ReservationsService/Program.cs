@@ -1,11 +1,20 @@
 using MSc.Cloud.Orchestration.Common;
 using System.Reflection;
 
+// get configuration from environment variables.
+var dbConnStr = Environment.GetEnvironmentVariable(NamesValues.EnvironmentVariables.PostgresConnectionString);
+ArgumentNullException.ThrowIfNull(dbConnStr, $"{NamesValues.EnvironmentVariables.PostgresConnectionString} environment variable is not set.");
+
+var supabaseSendEmailFuncUrl = Environment.GetEnvironmentVariable(NamesValues.EnvironmentVariables.SupabaseSendEmailFunctionUrl);
+ArgumentNullException.ThrowIfNull(dbConnStr, $"{NamesValues.EnvironmentVariables.SupabaseSendEmailFunctionUrl} environment variable is not set.");
+
+Console.WriteLine($"Using PostgreSQL connection string: {dbConnStr}");
+Console.WriteLine($"Using Supabase Send Email Function URL: {supabaseSendEmailFuncUrl}");
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// add commmon services.
 builder.Services.AddCommon(builder.Configuration);
-
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen(c =>
@@ -18,13 +27,10 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+// use api documentation.
 app.MapOpenApi();
 app.UseSwagger();
 app.UseSwaggerUI();
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.MapControllers();
 

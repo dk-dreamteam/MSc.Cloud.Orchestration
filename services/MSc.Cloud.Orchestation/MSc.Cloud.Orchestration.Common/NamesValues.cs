@@ -4,7 +4,8 @@ public class NamesValues
 {
     public class EnvironmentVariables
     {
-        public const string PostgresConnectionString = "POSTGRES_CONN_STR";
+        public static readonly string PostgresConnectionString = "POSTGRES_CONN_STR";
+        public static readonly string SupabaseSendEmailFunctionUrl = "SUPABASE_SEND_EMAIL_FUNCTION_URL";
     }
 
     public class Queries
