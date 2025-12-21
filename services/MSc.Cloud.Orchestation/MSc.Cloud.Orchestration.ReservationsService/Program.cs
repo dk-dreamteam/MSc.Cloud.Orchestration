@@ -1,16 +1,6 @@
 using MSc.Cloud.Orchestration.Common;
 using System.Reflection;
 
-// get configuration from environment variables.
-var dbConnStr = Environment.GetEnvironmentVariable(NamesValues.EnvironmentVariables.PostgresConnectionString);
-ArgumentNullException.ThrowIfNull(dbConnStr, $"{NamesValues.EnvironmentVariables.PostgresConnectionString} environment variable is not set.");
-
-var supabaseSendEmailFuncUrl = Environment.GetEnvironmentVariable(NamesValues.EnvironmentVariables.SupabaseSendEmailFunctionUrl);
-ArgumentNullException.ThrowIfNull(dbConnStr, $"{NamesValues.EnvironmentVariables.SupabaseSendEmailFunctionUrl} environment variable is not set.");
-
-Console.WriteLine($"Using PostgreSQL connection string: {dbConnStr}");
-Console.WriteLine($"Using Supabase Send Email Function URL: {supabaseSendEmailFuncUrl}");
-
 var builder = WebApplication.CreateBuilder(args);
 
 // add commmon services.
@@ -25,6 +15,10 @@ builder.Services.AddSwaggerGen(c =>
     c.IncludeXmlComments(xmlPath);
 });
 
+// add health checks.
+builder.Services.AddPostgresHealthChecks(builder.Configuration);
+builder.Services.AddSupabaseHealthChecks(builder.Configuration);
+
 var app = builder.Build();
 
 // use api documentation.
@@ -33,5 +27,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.MapControllers();
+app.MapGet("/", () => "Reservations Service is alive!").ExcludeFromDescription();
+app.MapHealthChecks("/health", CommonHealthCheckOptions.Default);
 
 app.Run();

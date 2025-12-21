@@ -6,6 +6,7 @@ public class NamesValues
     {
         public static readonly string PostgresConnectionString = "POSTGRES_CONN_STR";
         public static readonly string SupabaseSendEmailFunctionUrl = "SUPABASE_SEND_EMAIL_FUNCTION_URL";
+        public static readonly string SupabaseSendEmailFunctionToken = "SUPABASE_SEND_EMAIL_FUNCTION_TOKEN";
     }
 
     public class Queries
