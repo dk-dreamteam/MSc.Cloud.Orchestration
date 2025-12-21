@@ -2,55 +2,17 @@
 using MSc.Cloud.Orchestration.Common.Contracts;
 using MSc.Cloud.Orchestration.Common.Repositories.Interfaces;
 using System.Data;
+using static MSc.Cloud.Orchestration.Common.NamesValues.Queries.Events;
 
 namespace MSc.Cloud.Orchestration.Common.Repositories;
 
 public sealed class EventRepository(IDbConnection connection) : IEventRepository
 {
-    public async Task<int> CreateAsync(CreateEventRequest request)
-    {
-        const string sql = """
-            SELECT "Events".create_event(
-                @Name,
-                @Description,
-                @StartsAt,
-                @ImgUrl
-            );
-            """;
+    public async Task<int> CreateAsync(CreateEventRequest request) => await connection.ExecuteScalarAsync<int>(CreateEvent, request);
 
-        return await connection.ExecuteScalarAsync<int>(sql, request);
-    }
+    public async Task<EventDto?> GetByIdAsync(int id) => await connection.QuerySingleOrDefaultAsync<EventDto>(GetEventById, new { Id = id });
 
-    public async Task<EventDto?> GetByIdAsync(int id)
-    {
-        const string sql = """
-            SELECT *
-            FROM "Events".get_event_by_id(@Id);
-            """;
+    public async Task<IEnumerable<EventDto>> ListAsync() => await connection.QueryAsync<EventDto>(GetEvents);
 
-        return await connection.QuerySingleOrDefaultAsync<EventDto>(
-            sql,
-            new { Id = id });
-    }
-
-    public async Task<IEnumerable<EventDto>> ListAsync()
-    {
-        const string sql = """
-            SELECT *
-            FROM "Events".list_events();
-            """;
-
-        return await connection.QueryAsync<EventDto>(sql);
-    }
-
-    public async Task<bool> DeleteAsync(int id)
-    {
-        const string sql = """
-            SELECT "Events".delete_event(@Id);
-            """;
-
-        return await connection.ExecuteScalarAsync<bool>(
-            sql,
-            new { Id = id });
-    }
+    public async Task<bool> DeleteAsync(int id) => await connection.ExecuteScalarAsync<bool>(DeleteEvent, new { Id = id });
 }

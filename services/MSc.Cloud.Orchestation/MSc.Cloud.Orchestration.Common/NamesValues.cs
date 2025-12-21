@@ -11,12 +11,54 @@ public class NamesValues
     {
         public class Reservations
         {
-            public const string GetReservations = "SELECT * FROM \"Reservations\".\"Reservation\"";
+            internal const string CreateReservation = """
+                SELECT "Reservations".create_reservation(
+                    @EventId,
+                    @FullName,
+                    @NumTickets,
+                    @EmailAddress
+                );
+                """;
+
+            internal const string GetReservationById = """
+                SELECT *
+                FROM "Reservations".get_reservation_by_id(@Id);
+                """;
+
+            internal const string GetReservations = """
+                SELECT *
+                FROM "Reservations".list_reservations();
+                """;
+
+            internal const string DeleteReservation = """
+                SELECT "Reservations".delete_reservation(@Id);
+                """;
         }
 
         public class Events
         {
-            public const string GetEventsNotDeleted = "SELECT * FROM \"Events\".\"Event\" WHERE \"IsDeleted\" = FALSE";
+            internal const string CreateEvent = """
+                SELECT "Events".create_event(
+                    @Name,
+                    @Description,
+                    @StartsAt,
+                    @ImgUrl
+                );
+                """;
+
+            internal const string GetEventById = """
+                SELECT *
+                FROM "Events".get_event_by_id(@Id);
+                """;
+
+            internal const string GetEvents = """
+                SELECT *
+                FROM "Events".list_events();
+                """;
+
+            internal const string DeleteEvent = """
+                SELECT "Events".delete_event(@Id);
+                """;
         }
     }
 }
