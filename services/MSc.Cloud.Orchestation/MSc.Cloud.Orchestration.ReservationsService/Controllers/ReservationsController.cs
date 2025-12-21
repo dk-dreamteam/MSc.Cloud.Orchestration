@@ -27,7 +27,7 @@ public sealed class ReservationsController(
         var id = await reservationsRepository.CreateAsync(request);
 
         // after successful reservation, send confirmation email and don't await for result.
-        _ = sendEmailService.SendReservationConfirmationEmailAsync(request.EmailAddress, ev.Name, ev.StartsAt, cancellationToken);
+        await sendEmailService.SendReservationConfirmationEmailAsync(request.EmailAddress, ev.Name, ev.StartsAt, cancellationToken);
 
         // return 201 Created with new reservation id.
         return CreatedAtAction(

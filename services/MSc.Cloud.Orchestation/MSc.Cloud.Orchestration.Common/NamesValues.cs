@@ -7,6 +7,14 @@ public class NamesValues
         public static readonly string PostgresConnectionString = "POSTGRES_CONN_STR";
         public static readonly string SupabaseSendEmailFunctionUrl = "SUPABASE_SEND_EMAIL_FUNCTION_URL";
         public static readonly string SupabaseSendEmailFunctionToken = "SUPABASE_SEND_EMAIL_FUNCTION_TOKEN";
+        public static readonly string CountdownMailUrl = "COUNTDOWN_MAIL_URL";
+        public static readonly string CountdownMailToken = "COUNTDOWN_MAIL_TOKEN";
+    }
+
+    public class HttpClientNames
+    {
+        public static readonly string SupabaseClient = "SupabaseClient";
+        public static readonly string GifClient = "GifClient";
     }
 
     public class Queries

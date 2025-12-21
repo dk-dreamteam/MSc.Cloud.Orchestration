@@ -6,6 +6,8 @@ using MSc.Cloud.Orchestration.Common.Repositories.Interfaces;
 using MSc.Cloud.Orchestration.Common.Services;
 using Npgsql;
 using System.Data;
+using System.Net.Http;
+using static MSc.Cloud.Orchestration.Common.NamesValues.HttpClientNames;
 
 namespace MSc.Cloud.Orchestration.Common;
 
@@ -85,13 +87,21 @@ public static class RegisterServices
         var supabaseSendEmailFuncToken = Environment.GetEnvironmentVariable(NamesValues.EnvironmentVariables.SupabaseSendEmailFunctionToken);
         ArgumentNullException.ThrowIfNull(supabaseSendEmailFuncToken, string.Format(EnvVariableIsNotSetMessage, NamesValues.EnvironmentVariables.SupabaseSendEmailFunctionToken));
 
-        services
-            .AddHttpClient<ISendEmailService, SendEmailService>((httpClient) =>
-            {
-                httpClient.DefaultRequestHeaders.Authorization = new("Bearer", supabaseSendEmailFuncToken);
+        var countdownMailUrl = Environment.GetEnvironmentVariable(NamesValues.EnvironmentVariables.CountdownMailUrl);
+        ArgumentNullException.ThrowIfNull(countdownMailUrl, string.Format(EnvVariableIsNotSetMessage, NamesValues.EnvironmentVariables.CountdownMailUrl));
 
-                return new SendEmailService(httpClient, supabaseSendEmailFuncUrl);
-            });
+        var countdownMailToken = Environment.GetEnvironmentVariable(NamesValues.EnvironmentVariables.CountdownMailToken);
+        ArgumentNullException.ThrowIfNull(countdownMailToken, string.Format(EnvVariableIsNotSetMessage, NamesValues.EnvironmentVariables.CountdownMailToken));
+
+        // configure http clients.
+        services.AddHttpClient(SupabaseClient, client => client.DefaultRequestHeaders.Authorization = new("Bearer", supabaseSendEmailFuncToken));
+        services.AddHttpClient(GifClient, client => client.DefaultRequestHeaders.Authorization = new(countdownMailToken));
+
+        // configure send email service.
+        services.AddScoped<ISendEmailService, SendEmailService>((sp) => new SendEmailService(
+            sp.GetRequiredService<IHttpClientFactory>(),
+            countdownMailUrl,
+            supabaseSendEmailFuncUrl));
 
         return services;
     }
